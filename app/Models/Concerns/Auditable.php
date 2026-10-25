@@ -18,14 +18,14 @@ trait Auditable
     private static function registrarBitacora(mixed $model, AccionBitacora $accion): void
     {
         $excluidos = ['password', 'remember_token', 'clabe', 'updated_at'];
-        $dirty     = $model->getDirty();
+        $dirty = $model->getDirty();
 
         [$antes, $despues] = match ($accion) {
-            AccionBitacora::Crear    => [
+            AccionBitacora::Crear => [
                 null,
                 static::filtrarAtributos($model->getAttributes(), $excluidos) ?: null,
             ],
-            AccionBitacora::Editar   => [
+            AccionBitacora::Editar => [
                 static::filtrarAtributos(array_intersect_key($model->getOriginal(), $dirty), $excluidos) ?: null,
                 static::filtrarAtributos($dirty, $excluidos) ?: null,
             ],
@@ -41,12 +41,12 @@ trait Auditable
         }
 
         Bitacora::create([
-            'usuario_id'  => Auth::id(),  // null en consola (RN-21)
-            'tabla'       => $model->getTable(),
+            'usuario_id' => Auth::id(),  // null en consola (RN-21)
+            'tabla' => $model->getTable(),
             'registro_id' => $model->getKey(),
-            'accion'      => $accion,
-            'antes'       => $antes,
-            'despues'     => $despues,
+            'accion' => $accion,
+            'antes' => $antes,
+            'despues' => $despues,
         ]);
     }
 

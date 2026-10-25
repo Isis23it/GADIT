@@ -3,12 +3,13 @@
 use App\Models\Concerns\Auditable;
 
 it('filtrarAtributos excluye campos sensibles', function () {
-    $wrapper = new class {
+    $wrapper = new class
+    {
         use Auditable;
 
         public function filtrar(array $attrs, array $excluidos): array
         {
-            return static::filtrarAtributos($attrs, $excluidos);
+            return self::filtrarAtributos($attrs, $excluidos);
         }
     };
 
@@ -23,12 +24,13 @@ it('filtrarAtributos excluye campos sensibles', function () {
 });
 
 it('filtrarAtributos devuelve arreglo vacío si todos son excluidos', function () {
-    $wrapper = new class {
+    $wrapper = new class
+    {
         use Auditable;
 
         public function filtrar(array $attrs, array $excluidos): array
         {
-            return static::filtrarAtributos($attrs, $excluidos);
+            return self::filtrarAtributos($attrs, $excluidos);
         }
     };
 
