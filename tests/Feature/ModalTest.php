@@ -18,11 +18,11 @@ it('RF-83: el modal cierra con Esc, con la X y con clic fuera', function () {
 
 it('RF-83: el modal mide 480 o 640 px y ocupa toda la pantalla en móvil', function () {
     $this->blade('<x-modal nombre="prueba" titulo="Editar gasto" ancho="md">Contenido</x-modal>')
-        ->assertSee('sm:max-w-[480px]', false)
+        ->assertSee('md:max-w-[480px]', false)
         ->assertSee('h-full w-full', false);
 
     $this->blade('<x-modal nombre="prueba" titulo="Editar gasto" ancho="lg">Contenido</x-modal>')
-        ->assertSee('sm:max-w-[640px]', false);
+        ->assertSee('md:max-w-[640px]', false);
 });
 
 it('RF-84: con cambios sin guardar pregunta si se descartan', function () {

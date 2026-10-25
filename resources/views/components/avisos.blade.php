@@ -32,7 +32,7 @@
             class="pointer-events-auto flex items-start justify-between gap-3 rounded-md border px-4 py-3 text-sm shadow-sm"
         >
             <span x-text="aviso.mensaje"></span>
-            <button type="button" x-on:click="quitar(aviso.id)" aria-label="Cerrar aviso" class="font-medium">✕</button>
+            <button type="button" x-on:click="quitar(aviso.id)" aria-label="Cerrar aviso" class="flex min-h-11 min-w-11 items-center justify-center font-medium">✕</button>
         </div>
     </template>
 </div>
