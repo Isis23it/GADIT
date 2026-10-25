@@ -37,3 +37,9 @@ it('RF-83: un ancho desconocido falla en vez de mostrarse mal', function () {
     expect(fn () => $this->blade('<x-modal nombre="prueba" titulo="Editar gasto" ancho="xl">Contenido</x-modal>')->assertSee('Contenido'))
         ->toThrow(Exception::class);
 });
+
+it('RF-84: Descartar devuelve los campos a su valor original', function () {
+    $this->blade('<x-modal nombre="prueba" titulo="Editar gasto" :descartar="true">Contenido</x-modal>')
+        ->assertSee('x-on:click="descartarCambios()"', false)
+        ->assertSee('campo.defaultValue', false);
+});

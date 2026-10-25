@@ -25,6 +25,20 @@
             this.abierto = false;
             this.preguntando = false;
         },
+        descartarCambios() {
+            this.$root.querySelectorAll('input, textarea, select').forEach((campo) => {
+                if (campo.type === 'checkbox' || campo.type === 'radio') {
+                    campo.checked = campo.defaultChecked;
+                } else if (campo.tagName === 'SELECT') {
+                    Array.from(campo.options).forEach((opcion) => opcion.selected = opcion.defaultSelected);
+                } else {
+                    campo.value = campo.defaultValue;
+                }
+                campo.dispatchEvent(new Event('input', { bubbles: true }));
+            });
+            this.sucio = false;
+            this.cerrar(true);
+        },
     }"
     x-on:abrir-modal.window="if ($event.detail.nombre === '{{ $nombre }}') abrir()"
     x-on:cerrar-modal.window="if ($event.detail.nombre === '{{ $nombre }}') cerrar(true)"
@@ -59,7 +73,7 @@
             <div class="text-center">
                 <p class="text-lg font-semibold text-gray-900">¿Descartar los cambios?</p>
                 <div class="mt-4 flex justify-center gap-2">
-                    <button type="button" x-on:click="cerrar(true)" class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50">Descartar</button>
+                    <button type="button" x-on:click="descartarCambios()" class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50">Descartar</button>
                     <button type="button" x-on:click="preguntando = false" class="rounded-md bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800">Seguir editando</button>
                 </div>
             </div>
