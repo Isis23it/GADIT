@@ -25,8 +25,8 @@ class Bitacora extends Model
     protected function casts(): array
     {
         return [
-            'accion'  => AccionBitacora::class,
-            'antes'   => 'array',
+            'accion' => AccionBitacora::class,
+            'antes' => 'array',
             'despues' => 'array',
         ];
     }
