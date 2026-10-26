@@ -6,15 +6,19 @@ use App\Models\Usuario;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 #[Layout('layouts.auth')]
 class RestablecerContrasena extends Component
 {
-    public string $token                 = '';
-    public string $email                 = '';
-    public string $password              = '';
+    public string $token = '';
+
+    public string $email = '';
+
+    public string $password = '';
+
     public string $password_confirmation = '';
 
     public function mount(string $token): void
@@ -26,17 +30,17 @@ class RestablecerContrasena extends Component
     public function restablecer(): void
     {
         $this->validate([
-            'token'    => ['required'],
-            'email'    => ['required', 'email'],
+            'token' => ['required'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'confirmed', PasswordRule::min(12)->uncompromised()],
         ]);
 
         $estado = Password::reset(
             [
-                'email'                 => $this->email,
-                'password'              => $this->password,
+                'email' => $this->email,
+                'password' => $this->password,
                 'password_confirmation' => $this->password_confirmation,
-                'token'                 => $this->token,
+                'token' => $this->token,
             ],
             fn (Usuario $usuario, string $password) => $usuario->forceFill(['password' => $password])->save(),
         );
@@ -48,7 +52,7 @@ class RestablecerContrasena extends Component
         $this->redirect(route('login'), navigate: true);
     }
 
-    public function render(): \Illuminate\View\View
+    public function render(): View
     {
         return view('livewire.auth.restablecer-contrasena');
     }

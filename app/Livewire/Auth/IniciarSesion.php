@@ -7,13 +7,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 #[Layout('layouts.auth')]
 class IniciarSesion extends Component
 {
-    public string $email    = '';
+    public string $email = '';
+
     public string $password = '';
 
     public function iniciar(): void
@@ -21,7 +23,7 @@ class IniciarSesion extends Component
         $this->validarLimite();
 
         $this->validate([
-            'email'    => ['required', 'email'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
 
@@ -39,11 +41,12 @@ class IniciarSesion extends Component
         $this->redirect(session()->pull('url.intended', route('tablero')), navigate: true);
     }
 
+    /** @return list<string> */
     private function throttleKeys(): array
     {
         return [
-            'login_email:' . Str::lower($this->email),
-            'login_ip:'    . request()->ip(),
+            'login_email:'.Str::lower($this->email),
+            'login_ip:'.request()->ip(),
         ];
     }
 
@@ -54,7 +57,7 @@ class IniciarSesion extends Component
                 event(new Lockout(request()));
                 $segundos = RateLimiter::availableIn($key);
                 throw ValidationException::withMessages([
-                    'email' => "Demasiados intentos. Espera {$segundos} " . ($segundos === 1 ? 'segundo' : 'segundos') . '.',
+                    'email' => "Demasiados intentos. Espera {$segundos} ".($segundos === 1 ? 'segundo' : 'segundos').'.',
                 ]);
             }
         }
@@ -74,7 +77,7 @@ class IniciarSesion extends Component
         }
     }
 
-    public function render(): \Illuminate\View\View
+    public function render(): View
     {
         return view('livewire.auth.iniciar-sesion');
     }

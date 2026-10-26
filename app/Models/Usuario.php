@@ -20,8 +20,8 @@ class Usuario extends Authenticatable
     {
         return [
             'password' => 'hashed',
-            'rol'      => RolUsuario::class,
-            'activo'   => 'boolean',
+            'rol' => RolUsuario::class,
+            'activo' => 'boolean',
         ];
     }
 

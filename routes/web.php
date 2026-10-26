@@ -18,6 +18,7 @@ Route::post('/cerrar-sesion', function () {
     Auth::logout();
     request()->session()->invalidate();
     request()->session()->regenerateToken();
+
     return redirect()->route('login');
 })->middleware('auth')->name('logout');
 

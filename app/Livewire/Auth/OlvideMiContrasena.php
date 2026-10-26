@@ -3,14 +3,16 @@
 namespace App\Livewire\Auth;
 
 use Illuminate\Support\Facades\Password;
+use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 #[Layout('layouts.auth')]
 class OlvideMiContrasena extends Component
 {
-    public string $email   = '';
-    public bool   $enviado = false;
+    public string $email = '';
+
+    public bool $enviado = false;
 
     public function enviar(): void
     {
@@ -22,7 +24,7 @@ class OlvideMiContrasena extends Component
         $this->enviado = true;
     }
 
-    public function render(): \Illuminate\View\View
+    public function render(): View
     {
         return view('livewire.auth.olvide-mi-contrasena');
     }
