@@ -41,3 +41,9 @@ it('RF-82: fecha y hora en hora de México con 24 horas', function () {
 
     expect(Formato::fechaHora($utc))->toBe('14/10/2026 16:05');
 });
+
+it('RF-82: un valor nulo se muestra vacío en vez de fallar', function () {
+    expect(Formato::importe(null))->toBe('')
+        ->and(Formato::moneda(null))->toBe('')
+        ->and(Formato::porcentaje(null))->toBe('');
+});

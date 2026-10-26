@@ -26,3 +26,8 @@ it('RF-06: la acción de Livewire llega al botón Eliminar', function () {
     $this->blade('<x-confirmar-borrado nombre="borrar" registro="Gasto #12" wire:click="eliminar">Resumen</x-confirmar-borrado>')
         ->assertSee('wire:click="eliminar"', false);
 });
+
+it('RF-84: Cancelar cierra sin forzar para respetar el descarte', function () {
+    $this->blade('<x-confirmar-borrado nombre="borrar" registro="Gasto #12">Resumen</x-confirmar-borrado>')
+        ->assertSee('x-on:click="cerrar()" class="rounded-md border', false);
+});

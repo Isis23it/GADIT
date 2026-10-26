@@ -22,6 +22,10 @@ final class Formato
     /** Importe en columnas: 1,234.56 (negativo con signo menos). */
     public static function importe(mixed $valor): string
     {
+        if ($valor === null) {
+            return '';
+        }
+
         [$negativo, $texto] = self::numero($valor);
 
         return ($negativo ? self::MENOS : '').$texto;
@@ -30,6 +34,10 @@ final class Formato
     /** Importe en tarjetas, totales y pie: $1,234.56 */
     public static function moneda(mixed $valor): string
     {
+        if ($valor === null) {
+            return '';
+        }
+
         [$negativo, $texto] = self::numero($valor);
 
         return ($negativo ? self::MENOS : '').'$'.$texto;
@@ -38,6 +46,10 @@ final class Formato
     /** Porcentaje con dos decimales y espacio antes del signo: 16.00 % */
     public static function porcentaje(mixed $valor): string
     {
+        if ($valor === null) {
+            return '';
+        }
+
         return self::importe($valor).' %';
     }
 

@@ -12,7 +12,7 @@
     </div>
 
     <x-slot:pie>
-        <button type="button" x-on:click="cerrar(true)" class="rounded-md border border-gray-300 bg-white min-h-11 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50">Cancelar</button>
+        <button type="button" x-on:click="cerrar()" class="rounded-md border border-gray-300 bg-white min-h-11 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50">Cancelar</button>
         <button type="button" x-on:click="cerrar(true)" {{ $attributes }} class="rounded-md bg-red-700 min-h-11 px-4 py-2 text-sm font-medium text-white hover:bg-red-800">Eliminar</button>
     </x-slot:pie>
 </x-modal>

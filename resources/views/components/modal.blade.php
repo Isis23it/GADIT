@@ -12,10 +12,14 @@
         sucio: false,
         preguntando: false,
         descartar: {{ $descartar ? 'true' : 'false' }},
+        originales: [],
         abrir() {
             this.sucio = false;
             this.preguntando = false;
             this.abierto = true;
+            this.$nextTick(() => {
+                this.originales = Array.from(this.$root.querySelectorAll('input, textarea, select')).map((campo) => [campo, campo.type === 'checkbox' || campo.type === 'radio' ? campo.checked : campo.value]);
+            });
         },
         cerrar(forzar = false) {
             if (! forzar && this.descartar && this.sucio) {
@@ -26,13 +30,11 @@
             this.preguntando = false;
         },
         descartarCambios() {
-            this.$root.querySelectorAll('input, textarea, select').forEach((campo) => {
+            this.originales.forEach(([campo, valor]) => {
                 if (campo.type === 'checkbox' || campo.type === 'radio') {
-                    campo.checked = campo.defaultChecked;
-                } else if (campo.tagName === 'SELECT') {
-                    Array.from(campo.options).forEach((opcion) => opcion.selected = opcion.defaultSelected);
+                    campo.checked = valor;
                 } else {
-                    campo.value = campo.defaultValue;
+                    campo.value = valor;
                 }
                 campo.dispatchEvent(new Event('input', { bubbles: true }));
             });
