@@ -5,7 +5,7 @@
 --  Los gastos (GADIT / GADIT 2), proveedores, préstamos y traspasos se cargan con el importador.
 --  Los ids asumen tablas vacías.
 -- =====================================================================
-SET NAMES utf8mb4;
+SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE gadit;
 
 -- Categorías de arranque (editables; el importador mapea las 159 etiquetas del Excel a estas: 153 en GADIT y 6 más en GADIT 2)
