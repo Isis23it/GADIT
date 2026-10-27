@@ -8,10 +8,10 @@ Este documento define qué construir, con qué reglas y cómo verificarlo; lo qu
 
 | Dato                    | Valor                                                        |
 | ----------------------- | ------------------------------------------------------------ |
-| Versión                 | 1.2, borrador para revisión del dueño y del equipo (1.1: Laravel 13, Livewire 4 y PHP 8.4, con DEC-01, DEC-20 y RIE-15; 1.2: verificación completa contra el Excel, que cambia la sección 4, IMP-06, IMP-10, el informe del importador, PEN-10, PEN-14, PEN-17 a PEN-20, RIE-16 y agrega el Apéndice F) |
+| Versión                 | 1.3, borrador para revisión del dueño y del equipo (1.1: Laravel 13, Livewire 4 y PHP 8.4, con DEC-01, DEC-20 y RIE-15; 1.2: verificación completa contra el Excel, que cambia la sección 4, IMP-06, IMP-10, el informe del importador, PEN-10, PEN-14, PEN-17 a PEN-20, RIE-16 y agrega el Apéndice F; 1.3: la primera carga en MySQL 8.4 (RIE-07) deja `gadit_schema.sql` en v1.2, con colación unicode_ci y llaves RESTRICT explícitas) |
 | Fecha                   | 15/10/2026                                                   |
 | Sistema                 | Control administrativo GADIT: reemplazo web de `Gastos_GOG.xlsx` |
-| Documentos relacionados | `gadit_schema.sql` v1.1 (estructura normativa de la base), `gadit_semillas.sql` (datos de arranque y de prueba), `Gastos_GOG.xlsx` (fuente histórica) |
+| Documentos relacionados | `gadit_schema.sql` v1.2 (estructura normativa de la base), `gadit_semillas.sql` (datos de arranque y de prueba), `Gastos_GOG.xlsx` (fuente histórica) |
 
 **Precedencia.** La estructura de la base la fija `gadit_schema.sql`; el comportamiento (reglas, pantallas, permisos) lo fija este TDD. Si chocan, se corrige uno de los dos antes de programar.
 
@@ -417,7 +417,7 @@ Extensiones de PHP: `pdo_mysql`, `mbstring`, `intl`, `bcmath`, `zip`, `gd`, `xml
 
 ## 9. Modelo de datos
 
-La base tiene 21 tablas y 13 vistas definidas en `gadit_schema.sql` v1.1; las columnas y tipos están allí y esta sección añade lo que el SQL no dice: modelos, borrado, restricciones, etiquetas y relaciones.
+La base tiene 21 tablas y 13 vistas definidas en `gadit_schema.sql` v1.2; las columnas y tipos están allí y esta sección añade lo que el SQL no dice: modelos, borrado, restricciones, etiquetas y relaciones.
 
 **Tablas.** Todo modelo, salvo `Bitacora`, usa el trait `Auditable` (RN-21). Todas las llaves foráneas son `RESTRICT`.
 
@@ -1379,7 +1379,7 @@ Además del caso feliz y del mensaje exacto, cada regla se prueba con lo siguien
 - **Equivalencia.** En integración continua se crea una base `gadit_ref` con `mysql < gadit_schema.sql` y otra `gadit_test` con las migraciones. La prueba compara tablas, columnas (tipo, nulabilidad, valor por defecto, columna generada), índices, llaves foráneas, restricciones CHECK y vistas con su definición normalizada; cualquier diferencia falla.
 - **Vistas.** Los casos del Apéndice B se crean con las fábricas y se compara cada columna de las 13 vistas que intervienen con el valor escrito allí. Con los datos del Excel (sección 15) se repiten las cifras de control.
 - **Modo SQL.** La base de pruebas corre con `ONLY_FULL_GROUP_BY` (el valor por omisión de MySQL 8.4) y no se desactiva.
-- **Primera corrida en MySQL 8.4.** `gadit_schema.sql` y `gadit_semillas.sql` se validaron en MariaDB 10.11 con `ONLY_FULL_GROUP_BY`, no en MySQL 8.4. La primera tarea del equipo es correrlos en MySQL 8.4 y registrar el resultado en el pull request (RIE-07).
+- **Primera corrida en MySQL 8.4.** `gadit_schema.sql` y `gadit_semillas.sql` se validaron en MariaDB 10.11 con `ONLY_FULL_GROUP_BY`, no en MySQL 8.4. La primera tarea del equipo es correrlos en MySQL 8.4 y registrar el resultado en el pull request (RIE-07). Resultado de la primera corrida (GAD-28, 26/10/2026): ambos archivos cargaron sin error en MySQL 8.4.11 y las 13 vistas se consultaron sin error. Se corrigieron dos diferencias (la colación de la conexión y las llaves foráneas, que MySQL reporta NO ACTION si no declaran regla) y el SQL quedó en v1.2.
 
 ### Aceptación con el dueño
 
@@ -1820,7 +1820,7 @@ Nada se entrega al dueño hasta que cada fila tenga evidencia y firma. «Evidenc
 | #    | Verificación                                                 | Evidencia                                                    | Responsable        |
 | ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------ |
 | E-01 | La integración continua está en verde en la rama de entrega: Pest completo sobre MySQL 8.4, pint, Larastan nivel 6 y cobertura mínima de 80 % (RNF-11) | Enlace a la ejecución y reporte de cobertura                 | Desarrollo         |
-| E-02 | gadit\_schema.sql v1.1 y las migraciones producen el mismo esquema en MySQL 8.4, con las 21 tablas y las 13 vistas (RIE-07) | Salida de la comparación de esquemas y de las pruebas de vistas | Desarrollo         |
+| E-02 | gadit\_schema.sql v1.2 y las migraciones producen el mismo esquema en MySQL 8.4, con las 21 tablas y las 13 vistas (RIE-07) | Salida de la comparación de esquemas y de las pruebas de vistas | Desarrollo         |
 | E-03 | `php artisan migrate --force` y CatalogosBaseSeeder corren sin errores en un servidor limpio y dejan las personas, cuentas, categorías y el esquema de reparto de arranque | Registro de la ejecución                                     | Desarrollo         |
 | E-04 | La matriz de permisos (sección 6) pasa completa: cada rol solo hace lo que su fila permite, incluida la CLABE enmascarada | Reporte de tests/Feature/Permisos                            | Desarrollo         |
 | E-05 | El servidor cumple RNF-12: solo los puertos 22 (SSH con llave, sin contraseña y sin root), 80 y 443 abiertos; MySQL solo en 127.0.0.1; APP\_DEBUG=false y expose\_php=Off; certificado TLS con renovación automática; actualizaciones de seguridad del sistema operativo automáticas | Lista de comprobación de RNF-12 firmada                      | Desarrollo         |

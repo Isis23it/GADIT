@@ -1,10 +1,13 @@
 -- =====================================================================
---  GADIT · Modelo de datos v1.1 (reemplazo de Gastos_GOG.xlsx)
+--  GADIT · Modelo de datos v1.2 (reemplazo de Gastos_GOG.xlsx)
 --  v1.1: cuentas.saldo_inicial / fecha_saldo_inicial, v_saldo_cuentas con saldo inicial,
 --        índice único uq_gastos_origen (importación repetible)
 --  15/10/2026: solo comentarios corregidos tras verificar el Excel (sin cambios de estructura).
+--  v1.2: validado en MySQL 8.4.11 (RIE-07). SET NAMES con colación utf8mb4_unicode_ci explícita y
+--        llaves foráneas con ON DELETE/ON UPDATE RESTRICT explícitos (MariaDB las reporta como
+--        RESTRICT y MySQL como NO ACTION). Mismas 21 tablas y 13 vistas.
 --  Motor: MySQL 8.4 LTS en producción (TDD DEC-01) / MariaDB 10.6+ · InnoDB · utf8mb4.
---         Validado en MariaDB 10.11; la carga en MySQL 8.4 es la primera tarea del hito 0 (RIE-07).
+--         Validado en MariaDB 10.11 y en MySQL 8.4.11 (RIE-07).
 --  Convenciones: dinero DECIMAL(14,2) · porcentajes DECIMAL(5,2) (16.00 = 16 %)
 --                ids BIGINT UNSIGNED (compatibles con Laravel) · timestamps automáticos
 --                borrado lógico (deleted_at) en gastos, cobros, traspasos, prestamos, prestamo_pagos y
@@ -36,7 +39,7 @@
 --  Para reiniciar en desarrollo:  DROP DATABASE gadit;  y volver a correr este archivo.
 -- =====================================================================
 
-SET NAMES utf8mb4;  -- evita acentos corruptos aunque el cliente use otra codificación por defecto
+SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;  -- evita acentos corruptos aunque el cliente use otra codificación por defecto
 CREATE DATABASE IF NOT EXISTS gadit CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE gadit;
 
@@ -103,7 +106,7 @@ CREATE TABLE proyectos (
   PRIMARY KEY (id),
   UNIQUE KEY uq_proyectos_codigo (codigo),
   KEY ix_proyectos_cliente (cliente_id),
-  CONSTRAINT fk_proyectos_cliente FOREIGN KEY (cliente_id) REFERENCES clientes (id)
+  CONSTRAINT fk_proyectos_cliente FOREIGN KEY (cliente_id) REFERENCES clientes (id) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
 -- Pedido / contrato. Una adenda es otro contrato con tipo='adenda' y contrato_padre_id.
@@ -125,8 +128,8 @@ CREATE TABLE contratos (
   KEY ix_contratos_proyecto (proyecto_id),
   KEY ix_contratos_padre (contrato_padre_id),
   KEY ix_contratos_pedido (numero_pedido),
-  CONSTRAINT fk_contratos_proyecto FOREIGN KEY (proyecto_id) REFERENCES proyectos (id),
-  CONSTRAINT fk_contratos_padre FOREIGN KEY (contrato_padre_id) REFERENCES contratos (id),
+  CONSTRAINT fk_contratos_proyecto FOREIGN KEY (proyecto_id) REFERENCES proyectos (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_contratos_padre FOREIGN KEY (contrato_padre_id) REFERENCES contratos (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT ck_contratos_importe CHECK (importe >= 0)
 ) ENGINE=InnoDB;
 
@@ -143,7 +146,7 @@ CREATE TABLE contrato_ajustes (
   updated_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY ix_ajustes_contrato (contrato_id),
-  CONSTRAINT fk_ajustes_contrato FOREIGN KEY (contrato_id) REFERENCES contratos (id)
+  CONSTRAINT fk_ajustes_contrato FOREIGN KEY (contrato_id) REFERENCES contratos (id) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
@@ -164,7 +167,7 @@ CREATE TABLE cuentas (
   updated_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY uq_cuentas_nombre (nombre),
-  CONSTRAINT fk_cuentas_persona FOREIGN KEY (persona_id) REFERENCES personas (id)
+  CONSTRAINT fk_cuentas_persona FOREIGN KEY (persona_id) REFERENCES personas (id) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
 CREATE TABLE facturas (
@@ -191,7 +194,7 @@ CREATE TABLE facturas (
   UNIQUE KEY uq_facturas_uuid (uuid),
   KEY ix_facturas_contrato (contrato_id),
   KEY ix_facturas_emision (fecha_emision),
-  CONSTRAINT fk_facturas_contrato FOREIGN KEY (contrato_id) REFERENCES contratos (id),
+  CONSTRAINT fk_facturas_contrato FOREIGN KEY (contrato_id) REFERENCES contratos (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT ck_facturas_importe CHECK (importe >= 0),
   CONSTRAINT ck_facturas_retencion CHECK (retencion_pct BETWEEN 0 AND 100),
   CONSTRAINT ck_facturas_uuid CHECK (uuid IS NULL OR uuid REGEXP '^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$'),
@@ -219,8 +222,8 @@ CREATE TABLE cobros (
   KEY ix_cobros_complemento (complemento_uuid),
   KEY ix_cobros_cuenta (cuenta_id),
   KEY ix_cobros_fecha (fecha),
-  CONSTRAINT fk_cobros_factura FOREIGN KEY (factura_id) REFERENCES facturas (id),
-  CONSTRAINT fk_cobros_cuenta FOREIGN KEY (cuenta_id) REFERENCES cuentas (id),
+  CONSTRAINT fk_cobros_factura FOREIGN KEY (factura_id) REFERENCES facturas (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_cobros_cuenta FOREIGN KEY (cuenta_id) REFERENCES cuentas (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT ck_cobros_importe CHECK (importe > 0),
   CONSTRAINT ck_cobros_forma_pago CHECK (forma_pago IS NULL OR forma_pago REGEXP '^[0-9]{2}$'),
   CONSTRAINT ck_cobros_complemento CHECK (complemento_uuid IS NULL OR complemento_uuid REGEXP '^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$')
@@ -279,8 +282,8 @@ CREATE TABLE datos_bancarios (
   PRIMARY KEY (id),
   KEY ix_bancarios_proveedor (proveedor_id),
   KEY ix_bancarios_persona (persona_id),
-  CONSTRAINT fk_bancarios_proveedor FOREIGN KEY (proveedor_id) REFERENCES proveedores (id),
-  CONSTRAINT fk_bancarios_persona FOREIGN KEY (persona_id) REFERENCES personas (id),
+  CONSTRAINT fk_bancarios_proveedor FOREIGN KEY (proveedor_id) REFERENCES proveedores (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_bancarios_persona FOREIGN KEY (persona_id) REFERENCES personas (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT ck_bancarios_duenio CHECK ((proveedor_id IS NULL) <> (persona_id IS NULL)),  -- de uno u otro, no ambos
   CONSTRAINT ck_bancarios_ultimos4 CHECK (clabe_ultimos4 REGEXP '^[0-9]{4}$')
 ) ENGINE=InnoDB;
@@ -307,8 +310,8 @@ CREATE TABLE cuentas_por_pagar (
   PRIMARY KEY (id),
   KEY ix_cxp_proveedor (proveedor_id),
   KEY ix_cxp_proyecto (proyecto_id),
-  CONSTRAINT fk_cxp_proveedor FOREIGN KEY (proveedor_id) REFERENCES proveedores (id),
-  CONSTRAINT fk_cxp_proyecto FOREIGN KEY (proyecto_id) REFERENCES proyectos (id),
+  CONSTRAINT fk_cxp_proveedor FOREIGN KEY (proveedor_id) REFERENCES proveedores (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_cxp_proyecto FOREIGN KEY (proyecto_id) REFERENCES proyectos (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT ck_cxp_importe CHECK (importe >= 0)
 ) ENGINE=InnoDB;
 
@@ -330,8 +333,8 @@ CREATE TABLE prestamos (
   PRIMARY KEY (id),
   KEY ix_prestamos_acreedor (acreedor_id),
   KEY ix_prestamos_cuenta (cuenta_id),
-  CONSTRAINT fk_prestamos_acreedor FOREIGN KEY (acreedor_id) REFERENCES personas (id),
-  CONSTRAINT fk_prestamos_cuenta FOREIGN KEY (cuenta_id) REFERENCES cuentas (id),
+  CONSTRAINT fk_prestamos_acreedor FOREIGN KEY (acreedor_id) REFERENCES personas (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_prestamos_cuenta FOREIGN KEY (cuenta_id) REFERENCES cuentas (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT ck_prestamos_monto CHECK (monto > 0)
 ) ENGINE=InnoDB;
 
@@ -348,8 +351,8 @@ CREATE TABLE prestamo_pagos (
   PRIMARY KEY (id),
   KEY ix_pagos_prestamo (prestamo_id),
   KEY ix_pagos_cuenta (cuenta_id),
-  CONSTRAINT fk_pagos_prestamo FOREIGN KEY (prestamo_id) REFERENCES prestamos (id),
-  CONSTRAINT fk_pagos_cuenta FOREIGN KEY (cuenta_id) REFERENCES cuentas (id),
+  CONSTRAINT fk_pagos_prestamo FOREIGN KEY (prestamo_id) REFERENCES prestamos (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_pagos_cuenta FOREIGN KEY (cuenta_id) REFERENCES cuentas (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT ck_pagos_monto CHECK (monto_capital > 0)
 ) ENGINE=InnoDB;
 
@@ -371,8 +374,8 @@ CREATE TABLE traspasos (
   KEY ix_traspasos_fecha (fecha),
   KEY ix_traspasos_origen (cuenta_origen_id),
   KEY ix_traspasos_destino (cuenta_destino_id),
-  CONSTRAINT fk_traspasos_origen FOREIGN KEY (cuenta_origen_id) REFERENCES cuentas (id),
-  CONSTRAINT fk_traspasos_destino FOREIGN KEY (cuenta_destino_id) REFERENCES cuentas (id),
+  CONSTRAINT fk_traspasos_origen FOREIGN KEY (cuenta_origen_id) REFERENCES cuentas (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_traspasos_destino FOREIGN KEY (cuenta_destino_id) REFERENCES cuentas (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT ck_traspasos_monto CHECK (monto > 0),
   CONSTRAINT ck_traspasos_distintas CHECK (cuenta_origen_id <> cuenta_destino_id)
 ) ENGINE=InnoDB;
@@ -419,15 +422,15 @@ CREATE TABLE gastos (
   KEY ix_gastos_prestamo (prestamo_id),
   KEY ix_gastos_traspaso (traspaso_id),
   KEY ix_gastos_cfdi (cfdi_uuid),
-  CONSTRAINT fk_gastos_categoria FOREIGN KEY (categoria_id) REFERENCES categorias (id),
-  CONSTRAINT fk_gastos_cuenta FOREIGN KEY (cuenta_id) REFERENCES cuentas (id),
-  CONSTRAINT fk_gastos_proyecto FOREIGN KEY (proyecto_id) REFERENCES proyectos (id),
-  CONSTRAINT fk_gastos_proveedor FOREIGN KEY (proveedor_id) REFERENCES proveedores (id),
-  CONSTRAINT fk_gastos_beneficiario FOREIGN KEY (beneficiario_id) REFERENCES personas (id),
-  CONSTRAINT fk_gastos_cxp FOREIGN KEY (cuenta_por_pagar_id) REFERENCES cuentas_por_pagar (id),
-  CONSTRAINT fk_gastos_prestamo FOREIGN KEY (prestamo_id) REFERENCES prestamos (id),
-  CONSTRAINT fk_gastos_traspaso FOREIGN KEY (traspaso_id) REFERENCES traspasos (id),
-  CONSTRAINT fk_gastos_creado_por FOREIGN KEY (creado_por) REFERENCES usuarios (id),
+  CONSTRAINT fk_gastos_categoria FOREIGN KEY (categoria_id) REFERENCES categorias (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_gastos_cuenta FOREIGN KEY (cuenta_id) REFERENCES cuentas (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_gastos_proyecto FOREIGN KEY (proyecto_id) REFERENCES proyectos (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_gastos_proveedor FOREIGN KEY (proveedor_id) REFERENCES proveedores (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_gastos_beneficiario FOREIGN KEY (beneficiario_id) REFERENCES personas (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_gastos_cxp FOREIGN KEY (cuenta_por_pagar_id) REFERENCES cuentas_por_pagar (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_gastos_prestamo FOREIGN KEY (prestamo_id) REFERENCES prestamos (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_gastos_traspaso FOREIGN KEY (traspaso_id) REFERENCES traspasos (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_gastos_creado_por FOREIGN KEY (creado_por) REFERENCES usuarios (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT ck_gastos_importe CHECK (importe_con_iva <> 0),
   CONSTRAINT ck_gastos_periodo CHECK (periodo_inicio IS NULL OR periodo_fin IS NULL OR periodo_fin >= periodo_inicio),
   CONSTRAINT ck_gastos_cfdi CHECK (cfdi_uuid IS NULL OR cfdi_uuid REGEXP '^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$')
@@ -449,7 +452,7 @@ CREATE TABLE esquemas_reparto (
   updated_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY ix_esquemas_proyecto (proyecto_id),
-  CONSTRAINT fk_esquemas_proyecto FOREIGN KEY (proyecto_id) REFERENCES proyectos (id)
+  CONSTRAINT fk_esquemas_proyecto FOREIGN KEY (proyecto_id) REFERENCES proyectos (id) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
 CREATE TABLE esquema_reparto_socios (
@@ -457,8 +460,8 @@ CREATE TABLE esquema_reparto_socios (
   persona_id  BIGINT UNSIGNED NOT NULL,
   porcentaje  DECIMAL(5,2) NOT NULL,
   PRIMARY KEY (esquema_id, persona_id),
-  CONSTRAINT fk_esq_socios_esquema FOREIGN KEY (esquema_id) REFERENCES esquemas_reparto (id),
-  CONSTRAINT fk_esq_socios_persona FOREIGN KEY (persona_id) REFERENCES personas (id),
+  CONSTRAINT fk_esq_socios_esquema FOREIGN KEY (esquema_id) REFERENCES esquemas_reparto (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT fk_esq_socios_persona FOREIGN KEY (persona_id) REFERENCES personas (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT ck_esq_socios_pct CHECK (porcentaje > 0 AND porcentaje <= 100)
 ) ENGINE=InnoDB;
 
@@ -477,7 +480,7 @@ CREATE TABLE adjuntos (
   created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY ix_adjuntos_entidad (entidad, entidad_id),
-  CONSTRAINT fk_adjuntos_usuario FOREIGN KEY (subido_por) REFERENCES usuarios (id)
+  CONSTRAINT fk_adjuntos_usuario FOREIGN KEY (subido_por) REFERENCES usuarios (id) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
 -- Quién cambió qué y cuándo (en Excel no existía). No guardar datos sensibles (CLABE) en antes/despues.
@@ -492,7 +495,7 @@ CREATE TABLE bitacora (
   created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY ix_bitacora_registro (tabla, registro_id),
-  CONSTRAINT fk_bitacora_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
+  CONSTRAINT fk_bitacora_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB;
 
 
