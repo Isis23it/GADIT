@@ -15,7 +15,7 @@ trait Auditable
         static::deleted(fn ($m) => static::registrarBitacora($m, AccionBitacora::Eliminar));
     }
 
-    private static function registrarBitacora(mixed $model, AccionBitacora $accion): void
+    protected static function registrarBitacora(mixed $model, AccionBitacora $accion): void
     {
         $excluidos = ['password', 'remember_token', 'clabe', 'updated_at'];
         $dirty = $model->getDirty();
@@ -50,6 +50,9 @@ trait Auditable
         ]);
     }
 
+    /** @param  array<string, mixed>  $attrs
+     * @param  list<string>  $excluidos
+     * @return array<string, mixed> */
     protected static function filtrarAtributos(array $attrs, array $excluidos): array
     {
         return array_diff_key($attrs, array_flip($excluidos));
