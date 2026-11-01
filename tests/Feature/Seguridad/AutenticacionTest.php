@@ -8,9 +8,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Livewire;
 
-// Requiere tabla `usuarios` y `sessions` — pendiente de migraciones GAD-29
-$skip = 'Pendiente de migraciones GAD-29 (tabla usuarios)';
-
 beforeEach(function () {
     Carbon::setTestNow('2026-03-16 10:00', 'America/Mexico_City');
     RateLimiter::clear('login_email:test@example.com');
@@ -21,7 +18,7 @@ it('RF-11: muestra la pantalla de inicio de sesión', function () {
     $this->get(route('login'))
         ->assertOk()
         ->assertSeeLivewire(IniciarSesion::class);
-})->skip($skip);
+});
 
 it('RF-11: redirige al tablero tras credenciales correctas', function () {
     $usuario = Usuario::factory()->create();
@@ -33,7 +30,7 @@ it('RF-11: redirige al tablero tras credenciales correctas', function () {
         ->assertRedirect(route('tablero'));
 
     $this->assertAuthenticatedAs($usuario);
-})->skip($skip);
+})->skip("Pendiente de la ruta 'tablero' (el redirect final usa route('tablero'))");
 
 it('RF-11: credenciales incorrectas muestran mensaje genérico', function () {
     Usuario::factory()->create(['email' => 'correo@ejemplo.com']);
@@ -43,7 +40,7 @@ it('RF-11: credenciales incorrectas muestran mensaje genérico', function () {
         ->set('password', 'contraseña-incorrecta')
         ->call('iniciar')
         ->assertHasErrors(['email' => 'Correo o contraseña incorrectos.']);
-})->skip($skip);
+});
 
 it('RF-11: usuario inactivo muestra el mismo mensaje genérico', function () {
     Usuario::factory()->create([
@@ -56,7 +53,7 @@ it('RF-11: usuario inactivo muestra el mismo mensaje genérico', function () {
         ->set('password', 'password')
         ->call('iniciar')
         ->assertHasErrors(['email' => 'Correo o contraseña incorrectos.']);
-})->skip($skip);
+});
 
 it('SEG-02: bloquea tras 5 intentos fallidos por correo', function () {
     Usuario::factory()->create(['email' => 'limite@ejemplo.com']);
@@ -75,7 +72,7 @@ it('SEG-02: bloquea tras 5 intentos fallidos por correo', function () {
     expect(
         RateLimiter::tooManyAttempts('login_email:limite@ejemplo.com', 5)
     )->toBeTrue();
-})->skip($skip);
+});
 
 it('SEG-01: la recuperación exige contraseña de al menos 12 caracteres', function () {
     $usuario = Usuario::factory()->create();
@@ -86,11 +83,11 @@ it('SEG-01: la recuperación exige contraseña de al menos 12 caracteres', funct
         ->set('password_confirmation', 'corta')
         ->call('restablecer')
         ->assertHasErrors(['password']);
-})->skip($skip);
+});
 
 it('RF-13: recuperación siempre responde con el mismo mensaje', function () {
     Livewire::test(OlvideMiContrasena::class)
         ->set('email', 'noexiste@ejemplo.com')
         ->call('enviar')
         ->assertSet('enviado', true);
-})->skip($skip);
+});

@@ -4,11 +4,16 @@ namespace App\Models;
 
 use App\Enums\RolUsuario;
 use App\Models\Concerns\Auditable;
+use Database\Factories\UsuarioFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Usuario extends Authenticatable
 {
     use Auditable;
+
+    /** @use HasFactory<UsuarioFactory> */
+    use HasFactory;
 
     protected $table = 'usuarios';
 
