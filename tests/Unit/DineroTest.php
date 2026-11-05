@@ -33,6 +33,11 @@ it('B4: IVA de cobros parciales sin perder centavos', function () {
     expect((string) $ivaFactura->minus($iva1))->toBe('8.01');
 });
 
+it('DEC-03: rechaza float para evitar imprecisión binaria de punto flotante', function () {
+    expect(fn () => Dinero::of(0.1 + 0.2))->toThrow(InvalidArgumentException::class);
+    expect(fn () => Dinero::of(1.5))->toThrow(InvalidArgumentException::class);
+});
+
 it('B8: reparto de utilidad con redondeo exacto', function () {
     $utilidad = Dinero::of('5187349.65');
 

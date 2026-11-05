@@ -30,7 +30,7 @@ final class Clabe
 
     public static function ultimos4(string $clabe): string
     {
-        return substr($clabe, -4);
+        return substr(self::limpiar($clabe), -4);
     }
 
     public static function enmascarar(string $clabe): string
