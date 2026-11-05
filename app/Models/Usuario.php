@@ -6,6 +6,12 @@ use App\Enums\RolUsuario;
 use App\Models\Concerns\Auditable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+/**
+ * @property string $nombre
+ * @property string $email
+ * @property RolUsuario $rol
+ * @property bool $activo
+ */
 class Usuario extends Authenticatable
 {
     use Auditable;
