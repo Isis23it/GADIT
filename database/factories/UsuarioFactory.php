@@ -12,9 +12,6 @@ use Illuminate\Support\Facades\Hash;
  */
 class UsuarioFactory extends Factory
 {
-    /**
-     * Contraseña con hash que se reutiliza entre registros (evita recalcularlo cada vez).
-     */
     protected static ?string $password;
 
     /**
