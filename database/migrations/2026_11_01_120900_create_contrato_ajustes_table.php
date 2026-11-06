@@ -2,14 +2,14 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     public function up(): void
     {
-        // "No ejecutado", deductivas y descuentos que reducen lo que se puede facturar.
-        // Importes en positivo = lo que se resta del contrato.
+        // Ajustes que reducen lo facturable; importe positivo = lo que se resta del contrato.
         Schema::create('contrato_ajustes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('contrato_id');
@@ -25,6 +25,8 @@ return new class extends Migration
                 ->references('id')->on('contratos')
                 ->restrictOnDelete()->restrictOnUpdate();
         });
+
+        DB::statement('ALTER TABLE contrato_ajustes ADD CONSTRAINT ck_ajustes_importe CHECK (importe >= 0)');
     }
 
     public function down(): void

@@ -146,7 +146,8 @@ CREATE TABLE contrato_ajustes (
   updated_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY ix_ajustes_contrato (contrato_id),
-  CONSTRAINT fk_ajustes_contrato FOREIGN KEY (contrato_id) REFERENCES contratos (id) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT fk_ajustes_contrato FOREIGN KEY (contrato_id) REFERENCES contratos (id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT ck_ajustes_importe CHECK (importe >= 0)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
