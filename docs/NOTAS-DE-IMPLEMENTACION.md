@@ -37,3 +37,7 @@ SQL
 docker compose exec -T mysql bash -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD"' < docs/gadit_schema.sql
 docker compose exec -T mysql bash -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" gadit' < docs/gadit_semillas.sql
 ```
+
+## Las pruebas corren en MySQL, no en SQLite
+
+Las pruebas usan MySQL 8.4 (`phpunit.xml`, base `testing`), igual que producción (RIE-07). No hay que pasarlas a SQLite: el esquema usa restricciones `CHECK` con `REGEXP` (por ejemplo en `datos_bancarios` y `facturas`), columnas generadas y funciones propias de MySQL como `YEARWEEK`, y `migrate:fresh` fallaría.

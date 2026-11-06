@@ -9,10 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Cuentas bancarias de terceros (proveedores y personas). Dato financiero sensible (SEG-07):
-        //  - la app guarda la CLABE CIFRADA (por eso VARCHAR(255)) y valida su dígito verificador al capturar;
-        //  - clabe_ultimos4 permite mostrarla enmascarada sin descifrar;
-        //  - una sola cuenta 'principal' por tercero es regla de la app.
+        // CLABE cifrada (SEG-07): por eso VARCHAR(255); clabe_ultimos4 permite mostrarla enmascarada.
         Schema::create('datos_bancarios', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('proveedor_id')->nullable();
