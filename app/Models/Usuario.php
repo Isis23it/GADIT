@@ -8,6 +8,12 @@ use Database\Factories\UsuarioFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+/**
+ * @property string $nombre
+ * @property string $email
+ * @property RolUsuario $rol
+ * @property bool $activo
+ */
 class Usuario extends Authenticatable
 {
     use Auditable;
