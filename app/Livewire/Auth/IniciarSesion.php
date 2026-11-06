@@ -27,7 +27,13 @@ class IniciarSesion extends Component
             'password' => ['required', 'string'],
         ]);
 
-        if (! Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
+        $credenciales = [
+            'email' => $this->email,
+            'password' => $this->password,
+            'activo' => true, // un usuario inactivo recibe el mismo mensaje genérico (RF-11)
+        ];
+
+        if (! Auth::attempt($credenciales)) {
             $this->hitThrottle();
 
             throw ValidationException::withMessages([
@@ -36,7 +42,7 @@ class IniciarSesion extends Component
         }
 
         $this->clearThrottle();
-        request()->session()->regenerate();
+        session()->regenerate();
 
         $this->redirect(session()->pull('url.intended', route('tablero')), navigate: true);
     }
