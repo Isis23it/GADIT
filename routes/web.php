@@ -1,8 +1,10 @@
 <?php
 
 use App\Livewire\Auth\IniciarSesion;
+use App\Livewire\Auth\MiPerfil;
 use App\Livewire\Auth\OlvideMiContrasena;
 use App\Livewire\Auth\RestablecerContrasena;
+use App\Livewire\Tablero\Tablero;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -24,3 +26,9 @@ Route::post('/cerrar-sesion', function () {
 
 // Raíz redirige al tablero (o al login si no está autenticado)
 Route::get('/', fn () => redirect()->route('tablero'))->middleware('auth');
+
+// Pantallas internas (requieren sesión)
+Route::middleware('auth')->group(function () {
+    Route::livewire('/tablero', Tablero::class)->name('tablero');
+    Route::livewire('/perfil', MiPerfil::class)->name('perfil');
+});

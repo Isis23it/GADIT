@@ -12,7 +12,7 @@
                 autocomplete="email"
                 autofocus
                 required
-                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm
+                class="mt-1 block w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm
                        @error('email') border-red-500 @enderror"
             >
             @error('email')
@@ -32,7 +32,7 @@
                     :type="visible ? 'text' : 'password'"
                     autocomplete="current-password"
                     required
-                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pr-10
+                    class="block w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm pr-10 [&::-ms-reveal]:hidden
                            @error('password') border-red-500 @enderror"
                 >
                 <button
