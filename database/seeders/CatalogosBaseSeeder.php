@@ -32,7 +32,6 @@ class CatalogosBaseSeeder extends Seeder
         ['nombre' => 'Caja Alejandra', 'tipo' => 'caja', 'persona' => 'Alejandra', 'notas' => null],
         ['nombre' => 'Alfredo (intermediario)', 'tipo' => 'intermediario', 'persona' => 'Alfredo', 'notas' => null],
         ['nombre' => 'Caja GPE', 'tipo' => 'caja', 'persona' => 'GPE', 'notas' => null],
-        ['nombre' => 'Caja Javier', 'tipo' => 'caja', 'persona' => 'Javier', 'notas' => null],
     ];
 
     private const ESQUEMA = 'Reparto general (CONCENTRADO)';

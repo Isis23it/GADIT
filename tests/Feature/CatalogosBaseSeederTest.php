@@ -12,7 +12,7 @@ it('siembra personas, cuentas, categorías y el esquema de reparto', function ()
     expect(DB::table('categorias')->count())->toBe(32)
         ->and(DB::table('personas')->count())->toBe(5)
         ->and(DB::table('personas')->where('es_socio', 1)->count())->toBe(4)
-        ->and(DB::table('cuentas')->count())->toBe(5)
+        ->and(DB::table('cuentas')->count())->toBe(4)
         ->and(DB::table('esquemas_reparto')->count())->toBe(1)
         ->and(DB::table('esquema_reparto_socios')->count())->toBe(4);
 });
@@ -40,7 +40,7 @@ it('se puede correr dos veces sin duplicar filas', function () {
 
     expect(DB::table('categorias')->count())->toBe(32)
         ->and(DB::table('personas')->count())->toBe(5)
-        ->and(DB::table('cuentas')->count())->toBe(5)
+        ->and(DB::table('cuentas')->count())->toBe(4)
         ->and(DB::table('esquemas_reparto')->count())->toBe(1)
         ->and(DB::table('esquema_reparto_socios')->count())->toBe(4);
 });
@@ -73,6 +73,5 @@ it('enlaza las cuentas con su persona por nombre y no por id fijo', function () 
         'Caja Alejandra' => 'Alejandra',
         'Alfredo (intermediario)' => 'Alfredo',
         'Caja GPE' => 'GPE',
-        'Caja Javier' => 'Javier',
     ]);
 });
