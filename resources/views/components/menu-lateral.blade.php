@@ -18,7 +18,7 @@
                         <a href="{{ url($opcion['ruta']) }}"
                            @if ($activa) aria-current="page" @endif
                            @class([
-                               'flex min-h-11 items-center justify-between rounded-lg px-3 text-sm font-medium',
+                               'flex min-h-11 items-center justify-between rounded-lg px-3 text-base font-medium lg:text-sm',
                                'bg-indigo-50 text-indigo-700' => $activa,
                                'text-gray-700 hover:bg-gray-100' => ! $activa,
                            ])>

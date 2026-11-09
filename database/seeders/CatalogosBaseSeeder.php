@@ -5,90 +5,112 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-/** Catálogos de arranque aptos para producción (TDD sección 19, E-03). */
 class CatalogosBaseSeeder extends Seeder
 {
+    private const CATEGORIAS = [
+        'obra' => ['CONCRETO', 'MAQUINARIA', 'MATERIALES DE OBRA', 'FERRETERIA', 'LABORATORIO', 'TOPOGRAFIA', 'AGUA Y PIPAS', 'FLETES Y REMOLQUES', 'EQUIPO DE SEGURIDAD', 'SERVICIOS DE OBRA'],
+        'nomina' => ['NOMINA', 'FINIQUITOS'],
+        'impuestos' => ['SAT', 'IMSS', 'ISR', 'ISN', 'IVA'],
+        'comisiones' => ['COMISIONES', 'COMISION INTERMEDIARIO'],
+        'reparto_utilidad' => ['UTILIDAD'],
+        'financiamiento' => ['INTERESES', 'TRAMITES Y COMISIONES DE PRESTAMO'],
+        'logistica' => ['COMBUSTIBLE', 'CASETAS', 'VEHICULOS', 'VIATICOS'],
+        'administracion' => ['ADMINISTRACION', 'SISTEMAS Y SERVICIOS', 'FIANZAS Y SEGUROS', 'RENTAS'],
+        'otros' => ['APOYOS', 'VARIOS'],
+    ];
+
+    private const PERSONAS = [
+        ['nombre' => 'Alejandra', 'es_socio' => 1],
+        ['nombre' => 'Javier', 'es_socio' => 1],
+        ['nombre' => 'Álvaro', 'es_socio' => 1],
+        ['nombre' => 'GPE', 'es_socio' => 1],
+        ['nombre' => 'Alfredo', 'es_socio' => 0],
+    ];
+
+    private const CUENTAS = [
+        ['nombre' => 'Banco del Bajío (GADIT)', 'tipo' => 'banco', 'persona' => null, 'notas' => 'Supuesto de la carga inicial: todos los cobros entraron aquí'],
+        ['nombre' => 'Caja Alejandra', 'tipo' => 'caja', 'persona' => 'Alejandra', 'notas' => null],
+        ['nombre' => 'Alfredo (intermediario)', 'tipo' => 'intermediario', 'persona' => 'Alfredo', 'notas' => null],
+        ['nombre' => 'Caja GPE', 'tipo' => 'caja', 'persona' => 'GPE', 'notas' => null],
+    ];
+
+    private const ESQUEMA = 'Reparto general (CONCENTRADO)';
+
+    private const REPARTO = [
+        'Alejandra' => '30.00',
+        'Javier' => '25.00',
+        'Álvaro' => '22.50',
+        'GPE' => '22.50',
+    ];
+
     public function run(): void
     {
-        $this->categorias();
-        $this->personas();
-        $this->cuentas();
-        $this->esquemaReparto();
+        DB::transaction(function (): void {
+            $this->categorias();
+            $this->personas();
+            $this->cuentas();
+            $this->esquemaDeReparto();
+        });
     }
 
     private function categorias(): void
     {
-        DB::table('categorias')->insertOrIgnore([
-            ['nombre' => 'CONCRETO',                          'grupo' => 'obra'],
-            ['nombre' => 'MAQUINARIA',                        'grupo' => 'obra'],
-            ['nombre' => 'MATERIALES DE OBRA',                'grupo' => 'obra'],
-            ['nombre' => 'FERRETERIA',                        'grupo' => 'obra'],
-            ['nombre' => 'LABORATORIO',                       'grupo' => 'obra'],
-            ['nombre' => 'TOPOGRAFIA',                        'grupo' => 'obra'],
-            ['nombre' => 'AGUA Y PIPAS',                      'grupo' => 'obra'],
-            ['nombre' => 'FLETES Y REMOLQUES',                'grupo' => 'obra'],
-            ['nombre' => 'EQUIPO DE SEGURIDAD',               'grupo' => 'obra'],
-            ['nombre' => 'SERVICIOS DE OBRA',                 'grupo' => 'obra'],
-            ['nombre' => 'NOMINA',                            'grupo' => 'nomina'],
-            ['nombre' => 'FINIQUITOS',                        'grupo' => 'nomina'],
-            ['nombre' => 'SAT',                               'grupo' => 'impuestos'],
-            ['nombre' => 'IMSS',                              'grupo' => 'impuestos'],
-            ['nombre' => 'ISR',                               'grupo' => 'impuestos'],
-            ['nombre' => 'ISN',                               'grupo' => 'impuestos'],
-            ['nombre' => 'IVA',                               'grupo' => 'impuestos'],
-            ['nombre' => 'COMISIONES',                        'grupo' => 'comisiones'],
-            ['nombre' => 'COMISION INTERMEDIARIO',            'grupo' => 'comisiones'],
-            ['nombre' => 'UTILIDAD',                          'grupo' => 'reparto_utilidad'],
-            ['nombre' => 'INTERESES',                         'grupo' => 'financiamiento'],
-            ['nombre' => 'TRAMITES Y COMISIONES DE PRESTAMO', 'grupo' => 'financiamiento'],
-            ['nombre' => 'COMBUSTIBLE',                       'grupo' => 'logistica'],
-            ['nombre' => 'CASETAS',                           'grupo' => 'logistica'],
-            ['nombre' => 'VEHICULOS',                         'grupo' => 'logistica'],
-            ['nombre' => 'VIATICOS',                          'grupo' => 'logistica'],
-            ['nombre' => 'ADMINISTRACION',                    'grupo' => 'administracion'],
-            ['nombre' => 'SISTEMAS Y SERVICIOS',              'grupo' => 'administracion'],
-            ['nombre' => 'FIANZAS Y SEGUROS',                 'grupo' => 'administracion'],
-            ['nombre' => 'RENTAS',                            'grupo' => 'administracion'],
-            ['nombre' => 'APOYOS',                            'grupo' => 'otros'],
-            ['nombre' => 'VARIOS',                            'grupo' => 'otros'],
-        ]);
+        foreach (self::CATEGORIAS as $grupo => $nombres) {
+            foreach ($nombres as $nombre) {
+                $this->crearSiNoExiste('categorias', $nombre, ['grupo' => $grupo]);
+            }
+        }
     }
 
     private function personas(): void
     {
-        DB::table('personas')->insertOrIgnore([
-            ['id' => 1, 'nombre' => 'Alejandra', 'es_socio' => true],
-            ['id' => 2, 'nombre' => 'Javier',    'es_socio' => true],
-            ['id' => 3, 'nombre' => 'Álvaro',    'es_socio' => true],
-            ['id' => 4, 'nombre' => 'GPE',        'es_socio' => true],
-            ['id' => 5, 'nombre' => 'Alfredo',   'es_socio' => false],
-        ]);
+        foreach (self::PERSONAS as $persona) {
+            $this->crearSiNoExiste('personas', $persona['nombre'], ['es_socio' => $persona['es_socio']]);
+        }
     }
 
     private function cuentas(): void
     {
-        DB::table('cuentas')->insertOrIgnore([
-            ['id' => 1, 'nombre' => 'Banco del Bajío (GADIT)', 'tipo' => 'banco',        'persona_id' => null, 'notas' => 'Supuesto de la carga inicial: todos los cobros entraron aquí'],
-            ['id' => 2, 'nombre' => 'Caja Alejandra',          'tipo' => 'caja',         'persona_id' => 1,    'notas' => null],
-            ['id' => 3, 'nombre' => 'Alfredo (intermediario)', 'tipo' => 'intermediario', 'persona_id' => 5,    'notas' => null],
-            ['id' => 4, 'nombre' => 'Caja GPE',                'tipo' => 'caja',         'persona_id' => 4,    'notas' => null],
-            ['id' => 5, 'nombre' => 'Caja Javier',             'tipo' => 'caja',         'persona_id' => 2,    'notas' => null],
-        ]);
+        foreach (self::CUENTAS as $cuenta) {
+            $this->crearSiNoExiste('cuentas', $cuenta['nombre'], [
+                'tipo' => $cuenta['tipo'],
+                'persona_id' => $cuenta['persona'] ? $this->idPersona($cuenta['persona']) : null,
+                'notas' => $cuenta['notas'],
+            ]);
+        }
     }
 
-    private function esquemaReparto(): void
+    private function esquemaDeReparto(): void
     {
-        DB::table('esquemas_reparto')->insertOrIgnore([
-            'id' => 1,
-            'nombre' => 'Reparto general (CONCENTRADO)',
-            'notas' => 'Simulación del Excel: 30 / 25 / 22.5 / 22.5',
+        // Solo se siembra si no existe, para no deshacer lo que el dueño cambie en RF-54.
+        if (DB::table('esquemas_reparto')->where('nombre', self::ESQUEMA)->exists()) {
+            return;
+        }
+
+        $esquemaId = DB::table('esquemas_reparto')->insertGetId([
+            'nombre' => self::ESQUEMA,
+            'notas' => 'Valores iniciales del Excel: 30 / 25 / 22.5 / 22.5',
         ]);
 
-        DB::table('esquema_reparto_socios')->insertOrIgnore([
-            ['esquema_id' => 1, 'persona_id' => 1, 'porcentaje' => 30.00],
-            ['esquema_id' => 1, 'persona_id' => 2, 'porcentaje' => 25.00],
-            ['esquema_id' => 1, 'persona_id' => 3, 'porcentaje' => 22.50],
-            ['esquema_id' => 1, 'persona_id' => 4, 'porcentaje' => 22.50],
-        ]);
+        foreach (self::REPARTO as $persona => $porcentaje) {
+            DB::table('esquema_reparto_socios')->insert([
+                'esquema_id' => $esquemaId,
+                'persona_id' => $this->idPersona($persona),
+                'porcentaje' => $porcentaje,
+            ]);
+        }
+    }
+
+    /** @param array<string, mixed> $datos */
+    private function crearSiNoExiste(string $tabla, string $nombre, array $datos): void
+    {
+        if (! DB::table($tabla)->where('nombre', $nombre)->exists()) {
+            DB::table($tabla)->insert(['nombre' => $nombre] + $datos);
+        }
+    }
+
+    private function idPersona(string $nombre): int
+    {
+        return (int) DB::table('personas')->where('nombre', $nombre)->value('id');
     }
 }
