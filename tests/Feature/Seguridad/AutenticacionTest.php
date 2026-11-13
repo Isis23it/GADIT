@@ -30,7 +30,7 @@ it('RF-11: redirige al tablero tras credenciales correctas', function () {
         ->assertRedirect(route('tablero'));
 
     $this->assertAuthenticatedAs($usuario);
-})->skip("Pendiente de la ruta 'tablero' (el redirect final usa route('tablero'))");
+});
 
 it('RF-11: credenciales incorrectas muestran mensaje genérico', function () {
     Usuario::factory()->create(['email' => 'correo@ejemplo.com']);
