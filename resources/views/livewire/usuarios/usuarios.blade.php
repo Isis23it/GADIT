@@ -5,13 +5,13 @@
     <div class="mt-3 hidden overflow-x-auto rounded-lg border border-gray-200 bg-white md:block lg:overflow-visible">
         <table class="min-w-full divide-y divide-gray-200 text-sm">
             <caption class="sr-only">Lista de usuarios</caption>
-            <thead class="bg-gray-50 text-left text-gray-600">
+            <thead class="bg-gray-50 text-left text-gray-600 lg:sticky lg:top-0">
                 <tr>
-                    <th scope="col" class="px-4 py-3 font-medium lg:sticky lg:top-0">Nombre</th>
-                    <th scope="col" class="px-4 py-3 font-medium lg:sticky lg:top-0">Correo</th>
-                    <th scope="col" class="px-4 py-3 font-medium lg:sticky lg:top-0">Rol</th>
-                    <th scope="col" class="px-4 py-3 font-medium lg:sticky lg:top-0">Estado</th>
-                    <th scope="col" class="px-4 py-3 font-medium lg:sticky lg:top-0">Fecha de alta</th>
+                    <th scope="col" class="px-4 py-3 font-medium">Nombre</th>
+                    <th scope="col" class="px-4 py-3 font-medium">Correo</th>
+                    <th scope="col" class="px-4 py-3 font-medium">Rol</th>
+                    <th scope="col" class="px-4 py-3 font-medium">Estado</th>
+                    <th scope="col" class="px-4 py-3 font-medium">Fecha de alta</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
