@@ -179,7 +179,7 @@ it('RNF-01: fuera de producción la carga perezosa lanza excepción', function (
 it('RF-01: en móvil el orden se elige en un selector «Ordenar por» que no existe en escritorio', function () {
     Livewire::actingAs(adminDeListado())->test(Usuarios::class)
         ->assertSeeHtml('for="listado-ordenar"')
-        ->assertSeeHtml('class="md:hidden"')
+        ->assertSeeHtml('class="col-span-4! md:hidden"')
         ->assertSeeHtml('<option value="correo:asc"')
         ->assertSeeHtml('<option value="correo:desc"')
         ->assertSeeHtml('value="nombre:asc" selected');
@@ -218,5 +218,5 @@ it('RF-01: el selector de móvil ignora lo que no es una columna con dirección 
 
 it('RF-81: en móvil los controles de la barra van en dos columnas y en escritorio en una sola fila', function () {
     Livewire::actingAs(adminDeListado())->test(Usuarios::class)
-        ->assertSeeHtml('grid grid-cols-2 gap-3 md:contents');
+        ->assertSeeHtml('grid grid-cols-6 gap-3 md:contents');
 });

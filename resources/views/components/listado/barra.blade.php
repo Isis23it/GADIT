@@ -7,25 +7,25 @@
                class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 px-3 text-base shadow-sm focus:border-blue-700 focus:ring-2 focus:ring-blue-700 sm:text-sm">
     </div>
 
-    {{-- En móvil los controles van en dos columnas; desde 768 px vuelven a una sola fila (md:contents) --}}
-    <div class="grid grid-cols-2 gap-3 md:contents">
+    {{-- En móvil los controles van en dos filas de columnas (Rol/Estado a mitades, Ordenar 2/3 y Por página 1/3); desde 768 px vuelven a una sola fila (md:contents) --}}
+    <div class="grid grid-cols-6 gap-3 md:contents [&>*]:col-span-3">
         {{ $slot }}
 
         @if ($ordenes !== [])
             {{-- Las tarjetas de móvil no tienen encabezados, así que el orden se elige aquí (RF-01) --}}
-            <div class="md:hidden">
+            <div class="col-span-4! md:hidden">
                 <label for="listado-ordenar" class="block text-sm font-medium text-gray-700">Ordenar por</label>
                 <select id="listado-ordenar" wire:change="ordenarCon($event.target.value)"
                         class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 px-3 text-base shadow-sm focus:border-blue-700 focus:ring-2 focus:ring-blue-700">
                     @foreach ($ordenes as $clave => $texto)
-                        <option value="{{ $clave }}:asc" @selected($ordenActivo === $clave && $direccion !== 'desc')>{{ $texto }} (ascendente)</option>
-                        <option value="{{ $clave }}:desc" @selected($ordenActivo === $clave && $direccion === 'desc')>{{ $texto }} (descendente)</option>
+                        <option value="{{ $clave }}:asc" @selected($ordenActivo === $clave && $direccion !== 'desc')>{{ $texto }} (asc.)</option>
+                        <option value="{{ $clave }}:desc" @selected($ordenActivo === $clave && $direccion === 'desc')>{{ $texto }} (desc.)</option>
                     @endforeach
                 </select>
             </div>
         @endif
 
-        <div>
+        <div class="col-span-2!">
             <label for="listado-por-pagina" class="block text-sm font-medium text-gray-700">Por página</label>
             <select id="listado-por-pagina" wire:model.live="porPagina"
                     class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 px-3 text-base shadow-sm focus:border-blue-700 focus:ring-2 focus:ring-blue-700 sm:text-sm">
