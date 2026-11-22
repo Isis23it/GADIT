@@ -3,27 +3,23 @@
         <input type="hidden" wire:model="token">
 
         <div>
-            <label for="email" class="block text-sm font-medium text-gray-700">
-                Correo electrónico
-            </label>
+            <x-etiqueta para="email">Correo electrónico</x-etiqueta>
             <input
                 wire:model="email"
                 id="email"
                 type="email"
                 autocomplete="email"
                 required
-                class="mt-1 block w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm
+                aria-required="true"
+                @error('email') aria-invalid="true" aria-describedby="email-error" @enderror
+                class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 px-3 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm
                        @error('email') border-red-500 @enderror"
             >
-            @error('email')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-            @enderror
+            <x-error-campo para="email" />
         </div>
 
         <div class="mt-4" x-data="{ visible: false }">
-            <label for="password" class="block text-sm font-medium text-gray-700">
-                Nueva contraseña <span class="text-gray-400 font-normal">(mínimo 12 caracteres)</span>
-            </label>
+            <x-etiqueta para="password">Nueva contraseña <span class="font-normal text-gray-500">(mínimo 12 caracteres)</span></x-etiqueta>
             <div class="relative mt-1">
                 <input
                     wire:model="password"
@@ -31,11 +27,13 @@
                     :type="visible ? 'text' : 'password'"
                     autocomplete="new-password"
                     required
-                    class="block w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm pr-10
+                    aria-required="true"
+                    @error('password') aria-invalid="true" aria-describedby="password-error" @enderror
+                    class="block min-h-11 w-full rounded-lg border border-gray-300 pl-3 pr-12 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm [&::-ms-reveal]:hidden
                            @error('password') border-red-500 @enderror"
                 >
                 <button type="button" @click="visible = !visible"
-                    class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                    class="absolute inset-y-0 right-0 flex min-h-11 min-w-11 items-center justify-center text-gray-500 hover:text-gray-700"
                     :aria-label="visible ? 'Ocultar contraseña' : 'Mostrar contraseña'">
                     <svg x-show="!visible" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -46,22 +44,19 @@
                     </svg>
                 </button>
             </div>
-            @error('password')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-            @enderror
+            <x-error-campo para="password" />
         </div>
 
         <div class="mt-4">
-            <label for="password_confirmation" class="block text-sm font-medium text-gray-700">
-                Confirmar contraseña
-            </label>
+            <x-etiqueta para="password_confirmation">Confirmar contraseña</x-etiqueta>
             <input
                 wire:model="password_confirmation"
                 id="password_confirmation"
                 type="password"
                 autocomplete="new-password"
                 required
-                class="mt-1 block w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+                aria-required="true"
+                class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 px-3 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm"
             >
         </div>
 
@@ -69,7 +64,7 @@
             <button
                 type="submit"
                 wire:loading.attr="disabled"
-                class="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm
+                class="min-h-11 w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm
                        hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
                        focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed"
             >
