@@ -1,1 +1,2 @@
 //
+import './foco-primer-error';
