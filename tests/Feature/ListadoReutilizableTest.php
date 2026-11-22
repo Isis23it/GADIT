@@ -175,3 +175,48 @@ it('RF-81: la lista trae tabla para escritorio y tarjetas para móvil', function
 it('RNF-01: fuera de producción la carga perezosa lanza excepción', function () {
     expect(Model::preventsLazyLoading())->toBeTrue();
 });
+
+it('RF-01: en móvil el orden se elige en un selector «Ordenar por» que no existe en escritorio', function () {
+    Livewire::actingAs(adminDeListado())->test(Usuarios::class)
+        ->assertSeeHtml('for="listado-ordenar"')
+        ->assertSeeHtml('class="md:hidden"')
+        ->assertSeeHtml('<option value="correo:asc"')
+        ->assertSeeHtml('<option value="correo:desc"')
+        ->assertSeeHtml('value="nombre:asc" selected');
+});
+
+it('RF-01: el selector de móvil ordena igual que el encabezado y marca la opción activa', function () {
+    $admin = adminDeListado();
+    Usuario::factory()->create(['email' => 'a@gadit.test']);
+    Usuario::factory()->create(['email' => 'z@gadit.test']);
+
+    Livewire::actingAs($admin)->test(Usuarios::class)
+        ->call('ordenarCon', 'correo:desc')
+        ->assertSet('orden', 'correo')
+        ->assertSet('direccion', 'desc')
+        ->assertSeeHtml('value="correo:desc" selected')
+        ->assertSeeInOrder(['z@gadit.test', 'm@gadit.test', 'a@gadit.test']);
+});
+
+it('RF-01: el selector de móvil ignora lo que no es una columna con dirección y regresa a la página 1', function () {
+    Usuario::factory()->count(30)->create();
+
+    Livewire::actingAs(adminDeListado())->test(Usuarios::class)
+        ->call('nextPage')
+        ->call('ordenarCon', '')
+        ->assertSet('orden', '')
+        ->call('ordenarCon', 'correo:de lado')
+        ->assertSet('orden', 'correo')
+        ->assertSet('direccion', 'asc')
+        ->assertViewHas('usuarios', fn ($p) => $p->currentPage() === 1)
+        ->call('ordenarCon', 'x; DROP TABLE usuarios:desc')
+        ->assertOk()
+        ->assertViewHas('ordenActivo', 'nombre');
+
+    expect(Usuario::count())->toBe(31);
+});
+
+it('RF-81: en móvil los controles de la barra van en dos columnas y en escritorio en una sola fila', function () {
+    Livewire::actingAs(adminDeListado())->test(Usuarios::class)
+        ->assertSeeHtml('grid grid-cols-2 gap-3 md:contents');
+});

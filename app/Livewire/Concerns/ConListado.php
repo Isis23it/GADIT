@@ -70,6 +70,20 @@ trait ConListado
         $this->resetPage();
     }
 
+    /** Orden desde el selector de móvil: «columna:asc» o «columna:desc». */
+    public function ordenarCon(string $valor): void
+    {
+        [$columna, $direccion] = array_pad(explode(':', $valor, 2), 2, '');
+
+        if ($columna === '') {
+            return;
+        }
+
+        $this->orden = $columna;
+        $this->direccion = $direccion === 'desc' ? 'desc' : 'asc';
+        $this->resetPage();
+    }
+
     public function quitarFiltro(string $clave): void
     {
         unset($this->filtros[$clave]);

@@ -1,5 +1,7 @@
 <div>
-    <x-listado.barra etiqueta="Buscar usuarios" :tamanos="$this->tamanosPagina()">
+    <x-listado.barra etiqueta="Buscar usuarios" :tamanos="$this->tamanosPagina()"
+                     :ordenes="['nombre' => 'Nombre', 'correo' => 'Correo', 'rol' => 'Rol', 'estado' => 'Estado', 'alta' => 'Fecha de alta']"
+                     :orden-activo="$ordenActivo" :direccion="$direccion">
         <div>
             <label for="filtro-rol" class="block text-sm font-medium text-gray-700">Rol</label>
             <select id="filtro-rol" wire:model.live="filtros.rol"
