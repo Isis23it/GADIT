@@ -2,9 +2,7 @@
     <form wire:submit="iniciar" novalidate>
         {{-- Correo --}}
         <div>
-            <label for="email" class="block text-sm font-medium text-gray-700">
-                Correo electrónico
-            </label>
+            <x-etiqueta para="email">Correo electrónico</x-etiqueta>
             <input
                 wire:model="email"
                 id="email"
@@ -13,19 +11,16 @@
                 autofocus
                 @error('email') aria-invalid="true" aria-describedby="email-error" @enderror
                 required
+                aria-required="true"
                 class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 px-3 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm
                        @error('email') border-red-500 @enderror"
             >
-            @error('email')
-                <p id="email-error" class="mt-1 text-sm text-red-600">{{ $message }}</p>
-            @enderror
+            <x-error-campo para="email" />
         </div>
 
         {{-- Contraseña --}}
         <div class="mt-4" x-data="{ visible: false }">
-            <label for="password" class="block text-sm font-medium text-gray-700">
-                Contraseña
-            </label>
+            <x-etiqueta para="password">Contraseña</x-etiqueta>
             <div class="relative mt-1">
                 <input
                     wire:model="password"
@@ -34,6 +29,7 @@
                     autocomplete="current-password"
                     @error('password') aria-invalid="true" aria-describedby="password-error" @enderror
                     required
+                    aria-required="true"
                     class="block min-h-11 w-full rounded-lg border border-gray-300 pl-3 pr-12 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm [&::-ms-reveal]:hidden
                            @error('password') border-red-500 @enderror"
                 >
@@ -52,9 +48,7 @@
                     </svg>
                 </button>
             </div>
-            @error('password')
-                <p id="password-error" class="mt-1 text-sm text-red-600">{{ $message }}</p>
-            @enderror
+            <x-error-campo para="password" />
         </div>
 
         {{-- Botón --}}
