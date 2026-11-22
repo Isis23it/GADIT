@@ -19,7 +19,7 @@
         </div>
 
         <div class="mt-4" x-data="{ visible: false }">
-            <x-etiqueta para="password">Nueva contraseña <span class="font-normal text-gray-500">(mínimo 12 caracteres)</span></x-etiqueta>
+            <x-etiqueta para="password">Nueva contraseña</x-etiqueta>
             <div class="relative mt-1">
                 <input
                     wire:model="password"
@@ -28,7 +28,8 @@
                     autocomplete="new-password"
                     required
                     aria-required="true"
-                    @error('password') aria-invalid="true" aria-describedby="password-error" @enderror
+                    aria-describedby="password-ayuda @error('password') password-error @enderror"
+                    @error('password') aria-invalid="true" @enderror
                     class="block min-h-11 w-full rounded-lg border border-gray-300 pl-3 pr-12 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm [&::-ms-reveal]:hidden
                            @error('password') border-red-500 @enderror"
                 >
@@ -44,6 +45,7 @@
                     </svg>
                 </button>
             </div>
+            <p id="password-ayuda" class="mt-1 text-sm text-gray-500">Mínimo 12 caracteres.</p>
             <x-error-campo para="password" />
         </div>
 

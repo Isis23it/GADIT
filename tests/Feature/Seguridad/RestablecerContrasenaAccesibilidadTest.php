@@ -28,7 +28,15 @@ it('RF-85: los errores de restablecer quedan enlazados al campo y llevan icono',
     expect($html)->toContain('id="email-error"')
         ->and($html)->toContain('aria-describedby="email-error"')
         ->and($html)->toContain('id="password-error"')
-        ->and($html)->toContain('aria-describedby="password-error"')
+        ->and($html)->toMatch('/aria-describedby="[^"]*password-error/')
         ->and(substr_count($html, 'mt-0.5 h-4 w-4 shrink-0'))->toBe(2)
         ->and($html)->toContain('El campo correo electrónico es obligatorio.');
+});
+
+it('RF-85: la ayuda del mínimo de la contraseña queda enlazada al campo', function () {
+    $this->get(route('password.reset', ['token' => 'abc']))
+        ->assertOk()
+        ->assertSee('id="password-ayuda"', false)
+        ->assertSee('Mínimo 12 caracteres.')
+        ->assertSee('aria-describedby="password-ayuda', false);
 });
