@@ -10,7 +10,7 @@
 </head>
 <body class="min-h-screen bg-gray-50 antialiased">
 
-    <div class="flex min-h-screen items-center justify-center px-4 py-12">
+    <main class="flex min-h-screen items-center justify-center px-4 py-12">
         <div class="w-full max-w-[400px]">
             <div class="text-center mb-8">
                 <h1 class="text-3xl font-bold tracking-tight text-gray-900">GADIT</h1>
@@ -21,7 +21,7 @@
                 {{ $slot }}
             </div>
         </div>
-    </div>
+    </main>
 
     @livewireScripts
 </body>
