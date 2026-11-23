@@ -13,22 +13,18 @@ class GastoFactory extends Factory
 
     public function definition(): array
     {
-        $categoriaId = DB::table('categorias')->insertGetId([
-            'nombre' => 'TEST-'.fake()->unique()->uuid(),
-            'grupo' => 'otros',
-        ]);
-
-        $cuentaId = DB::table('cuentas')->insertGetId([
-            'nombre' => 'TEST-'.fake()->unique()->uuid(),
-            'tipo' => 'caja',
-        ]);
-
         return [
             'fecha' => '2024-01-15',
             'concepto' => 'Gasto de prueba',
             'importe_con_iva' => '100.00',
-            'categoria_id' => $categoriaId,
-            'cuenta_id' => $cuentaId,
+            'categoria_id' => fn () => DB::table('categorias')->insertGetId([
+                'nombre' => 'TEST-'.fake()->unique()->uuid(),
+                'grupo' => 'otros',
+            ]),
+            'cuenta_id' => fn () => DB::table('cuentas')->insertGetId([
+                'nombre' => 'TEST-'.fake()->unique()->uuid(),
+                'tipo' => 'caja',
+            ]),
         ];
     }
 }

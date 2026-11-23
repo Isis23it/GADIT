@@ -5,7 +5,7 @@ use App\Models\Bitacora;
 use App\Models\Gasto;
 use Illuminate\Support\Facades\DB;
 
-it('RN-20: borrado lógico registra entrada Eliminar en bitácora', function () {
+it('RN-21: borrado lógico registra entrada Eliminar en bitácora', function () {
     $gasto = Gasto::factory()->create();
 
     $gasto->delete();

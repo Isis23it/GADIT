@@ -39,7 +39,5 @@ it('DEC-12: no lanza excepción cuando updated_at no cambió', function () {
         }
     };
 
-    $accion->verificar($gasto, $updatedAt);
-
-    expect(true)->toBeTrue();
+    expect(fn () => $accion->verificar($gasto, $updatedAt))->not->toThrow(ReglaDeNegocioException::class);
 });
