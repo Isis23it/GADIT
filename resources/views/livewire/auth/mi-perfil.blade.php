@@ -47,9 +47,11 @@
             </div>
 
             <div>
+                @php($noCoincide = $password !== $password_confirmation && $errors->has('password'))
                 <x-etiqueta para="password_confirmation" obligatorio>Confirmar nueva contraseña</x-etiqueta>
                 <input wire:model="password_confirmation" id="password_confirmation" type="password" autocomplete="new-password" required aria-required="true"
-                       class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm">
+                       @if ($noCoincide) aria-invalid="true" aria-describedby="password-error" @endif
+                       class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm @if ($noCoincide) border-red-500 @endif">
             </div>
 
             <button type="submit" wire:loading.attr="disabled"
