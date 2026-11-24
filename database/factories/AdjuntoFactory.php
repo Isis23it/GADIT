@@ -17,11 +17,11 @@ class AdjuntoFactory extends Factory
         $uuid = Str::uuid();
 
         return [
-            'entidad'    => 'gasto',
+            'entidad' => 'gasto',
             'entidad_id' => fn () => Gasto::factory()->create()->id,
-            'nombre'     => 'documento.pdf',
-            'ruta'       => "adjuntos/gasto/0/{$uuid}.pdf",
-            'mime'       => 'application/pdf',
+            'nombre' => 'documento.pdf',
+            'ruta' => "adjuntos/gasto/0/{$uuid}.pdf",
+            'mime' => 'application/pdf',
             'subido_por' => null,
         ];
     }

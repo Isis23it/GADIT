@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Adjunto;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -12,7 +13,7 @@ class DescargaAdjuntoController extends Controller
     public function __invoke(Adjunto $adjunto): StreamedResponse
     {
         // Resuelve el padre manualmente para garantizar compatibilidad con enforceMorphMap
-        $clase = \Illuminate\Database\Eloquent\Relations\Relation::getMorphedModel($adjunto->entidad);
+        $clase = Relation::getMorphedModel($adjunto->entidad);
         abort_if($clase === null, 404);
         $padre = $clase::findOrFail($adjunto->entidad_id);
 

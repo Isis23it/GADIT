@@ -15,9 +15,9 @@ it('SEG-08: invitado que intenta descargar un adjunto va al inicio de sesión', 
 it('SEG-08: usuario autenticado descarga el adjunto del padre que puede ver', function () {
     Storage::fake('local');
 
-    $gasto   = Gasto::factory()->create();
+    $gasto = Gasto::factory()->create();
     $adjunto = Adjunto::factory()->create([
-        'entidad'    => 'gasto',
+        'entidad' => 'gasto',
         'entidad_id' => $gasto->id,
     ]);
     Storage::disk('local')->put($adjunto->ruta, 'contenido de prueba');
@@ -30,9 +30,9 @@ it('SEG-08: usuario autenticado descarga el adjunto del padre que puede ver', fu
 it('SEG-08: devuelve 404 si el archivo ya no existe en disco', function () {
     Storage::fake('local'); // disco vacío
 
-    $gasto   = Gasto::factory()->create();
+    $gasto = Gasto::factory()->create();
     $adjunto = Adjunto::factory()->create([
-        'entidad'    => 'gasto',
+        'entidad' => 'gasto',
         'entidad_id' => $gasto->id,
     ]);
 

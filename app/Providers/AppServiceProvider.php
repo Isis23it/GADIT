@@ -21,13 +21,9 @@ class AppServiceProvider extends ServiceProvider
         Model::preventLazyLoading(! $this->app->isProduction());
 
         // SEG-08: morph map estricto para adjuntos; lanza excepción si se usa una clave no registrada.
+        // shortcut: solo modelos implementados; cada PR que añada entidad debe registrar su clave aquí.
         Relation::enforceMorphMap([
-            'gasto'          => \App\Models\Gasto::class,
-            'factura'        => \App\Models\Factura::class,
-            'cobro'          => \App\Models\Cobro::class,
-            'contrato'       => \App\Models\Contrato::class,
-            'cuenta_por_pagar' => \App\Models\CuentaPorPagar::class,
-            'prestamo'       => \App\Models\Prestamo::class,
+            'gasto' => Gasto::class,
         ]);
 
         Gate::policy(Usuario::class, UsuarioPolicy::class);
