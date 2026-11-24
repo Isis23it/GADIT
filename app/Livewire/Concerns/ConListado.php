@@ -70,17 +70,15 @@ trait ConListado
         $this->resetPage();
     }
 
-    /** Orden desde el selector de móvil: «columna:asc» o «columna:desc». */
+    /** Orden desde el selector de móvil: solo se acepta «columna:asc» o «columna:desc» completo. */
     public function ordenarCon(string $valor): void
     {
-        [$columna, $direccion] = array_pad(explode(':', $valor, 2), 2, '');
-
-        if ($columna === '') {
+        if (preg_match('/^(?<columna>[A-Za-z0-9_]+):(?<direccion>asc|desc)$/', $valor, $partes) !== 1) {
             return;
         }
 
-        $this->orden = $columna;
-        $this->direccion = $direccion === 'desc' ? 'desc' : 'asc';
+        $this->orden = $partes['columna'];
+        $this->direccion = $partes['direccion'];
         $this->resetPage();
     }
 

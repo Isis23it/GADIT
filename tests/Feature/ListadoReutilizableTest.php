@@ -198,20 +198,22 @@ it('RF-01: el selector de móvil ordena igual que el encabezado y marca la opci�
         ->assertSeeInOrder(['z@gadit.test', 'm@gadit.test', 'a@gadit.test']);
 });
 
-it('RF-01: el selector de móvil ignora lo que no es una columna con dirección y regresa a la página 1', function () {
+it('RF-01: el selector de móvil solo acepta «columna:asc» o «columna:desc» completo', function () {
     Usuario::factory()->count(30)->create();
 
     Livewire::actingAs(adminDeListado())->test(Usuarios::class)
         ->call('nextPage')
         ->call('ordenarCon', '')
-        ->assertSet('orden', '')
+        ->call('ordenarCon', 'correo')
         ->call('ordenarCon', 'correo:de lado')
-        ->assertSet('orden', 'correo')
-        ->assertSet('direccion', 'asc')
-        ->assertViewHas('usuarios', fn ($p) => $p->currentPage() === 1)
         ->call('ordenarCon', 'x; DROP TABLE usuarios:desc')
-        ->assertOk()
-        ->assertViewHas('ordenActivo', 'nombre');
+        ->assertSet('orden', '')
+        ->assertSet('direccion', 'asc')
+        ->assertViewHas('usuarios', fn ($p) => $p->currentPage() === 2)
+        ->call('ordenarCon', 'correo:desc')
+        ->assertSet('orden', 'correo')
+        ->assertSet('direccion', 'desc')
+        ->assertViewHas('usuarios', fn ($p) => $p->currentPage() === 1);
 
     expect(Usuario::count())->toBe(31);
 });
