@@ -34,5 +34,5 @@ it('SEG-01: la contraseña filtrada se rechaza con un mensaje en español', func
         ->set('password_confirmation', $clave)
         ->call('cambiarContrasena')
         ->assertHasErrors(['password'])
-        ->assertSee('apareció en una filtración');
+        ->assertSee('comprometida en una filtración de datos');
 });

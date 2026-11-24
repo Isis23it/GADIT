@@ -4,13 +4,11 @@
 
         <form wire:submit="guardarNombre" novalidate class="mt-4 space-y-4">
             <div>
-                <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
-                <input wire:model="nombre" id="nombre" type="text" autocomplete="name" required
+                <x-etiqueta para="nombre" obligatorio>Nombre</x-etiqueta>
+                <input wire:model="nombre" id="nombre" type="text" autocomplete="name" required aria-required="true"
                        @error('nombre') aria-invalid="true" aria-describedby="nombre-error" @enderror
                        class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm @error('nombre') border-red-500 @enderror">
-                @error('nombre')
-                    <p id="nombre-error" class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-error-campo para="nombre" />
             </div>
 
             <div>
@@ -31,31 +29,29 @@
 
         <form wire:submit="cambiarContrasena" novalidate class="mt-4 space-y-4">
             <div>
-                <label for="password_actual" class="block text-sm font-medium text-gray-700">Contraseña actual</label>
-                <input wire:model="password_actual" id="password_actual" type="password" autocomplete="current-password" required
+                <x-etiqueta para="password_actual" obligatorio>Contraseña actual</x-etiqueta>
+                <input wire:model="password_actual" id="password_actual" type="password" autocomplete="current-password" required aria-required="true"
                        @error('password_actual') aria-invalid="true" aria-describedby="password_actual-error" @enderror
                        class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm @error('password_actual') border-red-500 @enderror">
-                @error('password_actual')
-                    <p id="password_actual-error" class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-error-campo para="password_actual" />
             </div>
 
             <div>
-                <label for="password" class="block text-sm font-medium text-gray-700">Nueva contraseña</label>
-                <input wire:model="password" id="password" type="password" autocomplete="new-password" required
+                <x-etiqueta para="password" obligatorio>Nueva contraseña</x-etiqueta>
+                <input wire:model="password" id="password" type="password" autocomplete="new-password" required aria-required="true"
                        aria-describedby="password-ayuda @error('password') password-error @enderror"
                        @error('password') aria-invalid="true" @enderror
                        class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm @error('password') border-red-500 @enderror">
                 <p id="password-ayuda" class="mt-1 text-sm text-gray-500">Mínimo 12 caracteres.</p>
-                @error('password')
-                    <p id="password-error" class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                <x-error-campo para="password" />
             </div>
 
             <div>
-                <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirmar nueva contraseña</label>
-                <input wire:model="password_confirmation" id="password_confirmation" type="password" autocomplete="new-password" required
-                       class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm">
+                @php($noCoincide = $password !== $password_confirmation && $errors->has('password'))
+                <x-etiqueta para="password_confirmation" obligatorio>Confirmar nueva contraseña</x-etiqueta>
+                <input wire:model="password_confirmation" id="password_confirmation" type="password" autocomplete="new-password" required aria-required="true"
+                       @if ($noCoincide) aria-invalid="true" aria-describedby="password-error" @endif
+                       class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm @if ($noCoincide) border-red-500 @endif">
             </div>
 
             <button type="submit" wire:loading.attr="disabled"
