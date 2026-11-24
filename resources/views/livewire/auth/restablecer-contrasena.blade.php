@@ -3,7 +3,7 @@
         <input type="hidden" wire:model="token">
 
         <div>
-            <x-etiqueta para="email">Correo electrónico</x-etiqueta>
+            <x-etiqueta para="email" obligatorio>Correo electrónico</x-etiqueta>
             <input
                 wire:model="email"
                 id="email"
@@ -19,7 +19,7 @@
         </div>
 
         <div class="mt-4" x-data="{ visible: false }">
-            <x-etiqueta para="password">Nueva contraseña</x-etiqueta>
+            <x-etiqueta para="password" obligatorio>Nueva contraseña</x-etiqueta>
             <div class="relative mt-1">
                 <input
                     wire:model="password"
@@ -50,7 +50,7 @@
         </div>
 
         <div class="mt-4">
-            <x-etiqueta para="password_confirmation">Confirmar contraseña</x-etiqueta>
+            <x-etiqueta para="password_confirmation" obligatorio>Confirmar contraseña</x-etiqueta>
             <input
                 wire:model="password_confirmation"
                 id="password_confirmation"

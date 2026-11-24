@@ -2,7 +2,7 @@
     <form wire:submit="iniciar" novalidate>
         {{-- Correo --}}
         <div>
-            <x-etiqueta para="email">Correo electrónico</x-etiqueta>
+            <x-etiqueta para="email" obligatorio>Correo electrónico</x-etiqueta>
             <input
                 wire:model="email"
                 id="email"
@@ -20,7 +20,7 @@
 
         {{-- Contraseña --}}
         <div class="mt-4" x-data="{ visible: false }">
-            <x-etiqueta para="password">Contraseña</x-etiqueta>
+            <x-etiqueta para="password" obligatorio>Contraseña</x-etiqueta>
             <div class="relative mt-1">
                 <input
                     wire:model="password"

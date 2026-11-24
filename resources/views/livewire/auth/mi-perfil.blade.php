@@ -4,7 +4,7 @@
 
         <form wire:submit="guardarNombre" novalidate class="mt-4 space-y-4">
             <div>
-                <x-etiqueta para="nombre">Nombre</x-etiqueta>
+                <x-etiqueta para="nombre" obligatorio>Nombre</x-etiqueta>
                 <input wire:model="nombre" id="nombre" type="text" autocomplete="name" required aria-required="true"
                        @error('nombre') aria-invalid="true" aria-describedby="nombre-error" @enderror
                        class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm @error('nombre') border-red-500 @enderror">
@@ -29,7 +29,7 @@
 
         <form wire:submit="cambiarContrasena" novalidate class="mt-4 space-y-4">
             <div>
-                <x-etiqueta para="password_actual">Contraseña actual</x-etiqueta>
+                <x-etiqueta para="password_actual" obligatorio>Contraseña actual</x-etiqueta>
                 <input wire:model="password_actual" id="password_actual" type="password" autocomplete="current-password" required aria-required="true"
                        @error('password_actual') aria-invalid="true" aria-describedby="password_actual-error" @enderror
                        class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm @error('password_actual') border-red-500 @enderror">
@@ -37,7 +37,7 @@
             </div>
 
             <div>
-                <x-etiqueta para="password">Nueva contraseña</x-etiqueta>
+                <x-etiqueta para="password" obligatorio>Nueva contraseña</x-etiqueta>
                 <input wire:model="password" id="password" type="password" autocomplete="new-password" required aria-required="true"
                        aria-describedby="password-ayuda @error('password') password-error @enderror"
                        @error('password') aria-invalid="true" @enderror
@@ -47,7 +47,7 @@
             </div>
 
             <div>
-                <x-etiqueta para="password_confirmation">Confirmar nueva contraseña</x-etiqueta>
+                <x-etiqueta para="password_confirmation" obligatorio>Confirmar nueva contraseña</x-etiqueta>
                 <input wire:model="password_confirmation" id="password_confirmation" type="password" autocomplete="new-password" required aria-required="true"
                        class="mt-1 block min-h-11 w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm">
             </div>

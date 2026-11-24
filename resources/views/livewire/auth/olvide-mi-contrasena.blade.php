@@ -15,7 +15,7 @@
 
         <form wire:submit="enviar" novalidate>
             <div>
-                <x-etiqueta para="email">Correo electrónico</x-etiqueta>
+                <x-etiqueta para="email" obligatorio>Correo electrónico</x-etiqueta>
                 <input
                     wire:model="email"
                     id="email"
