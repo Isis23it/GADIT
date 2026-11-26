@@ -20,7 +20,12 @@ abstract class Action
         }
     }
 
-    protected function transaccion(callable $fn): mixed
+    /**
+     * @template TReturn
+     * @param \Closure(): TReturn $fn
+     * @return TReturn
+     */
+    protected function transaccion(\Closure $fn): mixed
     {
         return DB::transaction($fn);
     }
