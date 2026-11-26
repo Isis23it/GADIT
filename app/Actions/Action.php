@@ -22,7 +22,8 @@ abstract class Action
 
     /**
      * @template TReturn
-     * @param \Closure(): TReturn $fn
+     *
+     * @param  \Closure(): TReturn  $fn
      * @return TReturn
      */
     protected function transaccion(\Closure $fn): mixed
