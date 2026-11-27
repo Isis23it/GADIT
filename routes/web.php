@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DescargaAdjuntoController;
 use App\Livewire\Auth\IniciarSesion;
 use App\Livewire\Auth\MiPerfil;
 use App\Livewire\Auth\OlvideMiContrasena;
@@ -34,4 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/tablero', Tablero::class)->name('tablero');
     Route::livewire('/perfil', MiPerfil::class)->name('perfil');
     Route::livewire('/usuarios', Usuarios::class)->name('usuarios')->middleware('can:viewAny,'.Usuario::class);
+
+    // RF-34 / SEG-08: adjuntos privados servidos por controlador con política del padre
+    Route::get('/adjuntos/{adjunto}', DescargaAdjuntoController::class)->name('adjuntos.descargar');
 });
