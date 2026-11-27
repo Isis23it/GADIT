@@ -7,6 +7,7 @@ use App\Models\Concerns\Auditable;
 use Database\Factories\UsuarioFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * @property string $nombre
@@ -20,6 +21,8 @@ class Usuario extends Authenticatable
 
     /** @use HasFactory<UsuarioFactory> */
     use HasFactory;
+
+    use Notifiable;
 
     protected $table = 'usuarios';
 

@@ -5,6 +5,8 @@ use App\Livewire\Auth\OlvideMiContrasena;
 use App\Livewire\Auth\RestablecerContrasena;
 use App\Models\Usuario;
 use Carbon\Carbon;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Livewire;
 
@@ -90,4 +92,28 @@ it('RF-13: recuperación siempre responde con el mismo mensaje', function () {
         ->set('email', 'noexiste@ejemplo.com')
         ->call('enviar')
         ->assertSet('enviado', true);
+});
+
+it('RF-13: con un correo existente envía el enlace de recuperación al usuario', function () {
+    Notification::fake();
+    $usuario = Usuario::factory()->create(['email' => 'existe@ejemplo.com']);
+
+    Livewire::test(OlvideMiContrasena::class)
+        ->set('email', 'existe@ejemplo.com')
+        ->call('enviar')
+        ->assertSet('enviado', true);
+
+    Notification::assertSentTo($usuario, ResetPassword::class);
+});
+
+it('RF-13: con un correo inexistente no envía nada y responde igual', function () {
+    Notification::fake();
+
+    Livewire::test(OlvideMiContrasena::class)
+        ->set('email', 'noexiste@ejemplo.com')
+        ->call('enviar')
+        ->assertSet('enviado', true)
+        ->assertHasNoErrors();
+
+    Notification::assertNothingSent();
 });
