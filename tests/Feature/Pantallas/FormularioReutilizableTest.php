@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Usuario;
+use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
 use Tests\Fixtures\FormularioDePrueba;
 
@@ -90,4 +91,9 @@ it('RF-05: si updated_at cambió muestra el aviso de DEC-12 y no guarda', functi
         ->assertNotDispatched('aviso');
 
     expect($usuario->fresh()->nombre)->toBe('De otra persona');
+});
+
+it('DEC-12: el cliente no puede sobrescribir actualizadoEn para saltarse el bloqueo', function () {
+    expect(fn () => Livewire::test(FormularioDePrueba::class)->set('actualizadoEn', '2020-01-01 00:00:00'))
+        ->toThrow(CannotUpdateLockedPropertyException::class);
 });

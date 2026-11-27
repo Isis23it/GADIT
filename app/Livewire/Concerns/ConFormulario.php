@@ -4,6 +4,7 @@ namespace App\Livewire\Concerns;
 
 use App\Exceptions\ReglaDeNegocioException;
 use Illuminate\Database\Eloquent\Model;
+use Livewire\Attributes\Locked;
 
 /**
  * Comportamiento común de los formularios (RF-02 a RF-05, DEC-12).
@@ -17,6 +18,7 @@ trait ConFormulario // @phpstan-ignore trait.unused (primer uso real en GAD-58; 
     public ?string $errorRegla = null;
 
     /** updated_at del registro al abrir el formulario; la Action lo compara para el bloqueo optimista (RF-05). */
+    #[Locked]
     public ?string $actualizadoEn = null;
 
     /** Prepara el formulario al abrirlo: sin errores previos y, al editar, con el updated_at actual. */
@@ -58,7 +60,11 @@ trait ConFormulario // @phpstan-ignore trait.unused (primer uso real en GAD-58; 
         return true;
     }
 
-    /** Deja el formulario vacío para «Guardar y capturar otro». Se puede sobrescribir para conservar campos. */
+    /**
+     * Deja el formulario vacío para «Guardar y capturar otro».
+     * Resetea TODAS las propiedades públicas: si el componente tiene filtros o ids que deben sobrevivir,
+     * se sobrescribe y se usa resetExcept().
+     */
     protected function reiniciarFormulario(): void
     {
         $this->reset();
